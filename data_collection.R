@@ -28,6 +28,9 @@ if (!file.exists(here(dt,'il_network.graphml'))) {
 
 utm = 32616
 
+vars = paste0('B01001_0', c(16:25, 40:49))
+total = 'B01001_001'
+
 tracts = get_acs(
   year = 2019,
   variables = c(total, vars),
@@ -61,9 +64,6 @@ icu = read_csv(
   rename_with( ~ paste0(.x, '_icu'))
 
 hospital_icu = left_join(hospital, icu, by = c('ADDRESS' = 'address_icu'))
-
-vars = paste0('B01001_0', c(16:25, 40:49))
-total = 'B01001_001'
 
 hex_il = st_make_grid(
   il,
