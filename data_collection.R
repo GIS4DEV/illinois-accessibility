@@ -28,9 +28,23 @@ if (!file.exists(here(dt,'il_network.graphml'))) {
 
 utm = 32616
 
-il = states() %>%
-  filter(NAME == 'Illinois') %>%
-  st_transform(utm)
+tracts = get_acs(
+  year = 2019,
+  variables = c(total, vars),
+  geography = 'tract',
+  state = 'il',
+  geometry = T,
+  output = 'wide'
+) %>%
+  select(contains('E')) %>%
+  rename(total = 'B01001_001E') %>%
+  rowwise %>%
+  mutate(above_50 = sum(c_across(paste0(vars, 'E'))),
+         state = "il") %>%
+  select(!contains(vars)) %>% 
+  st_transform(utm) 
+
+il = group_by(tracts,state) %>% summarize
 
 hospital = read_sf(
   'https://opendata.arcgis.com/datasets/6ac5e325468c4cb9b905f1728d6fbf0f_0.geojson'
@@ -50,20 +64,6 @@ hospital_icu = left_join(hospital, icu, by = c('ADDRESS' = 'address_icu'))
 
 vars = paste0('B01001_0', c(16:25, 40:49))
 total = 'B01001_001'
-
-tracts = get_acs(
-  year = 2019,
-  variables = c(total, vars),
-  geography = 'tract',
-  state = 'il',
-  geometry = T,
-  output = 'wide'
-) %>%
-  select(contains('E')) %>%
-  rename(total = 'B01001_001E') %>%
-  rowwise %>%
-  mutate(above_50 = sum(c_across(paste0(vars, 'E')))) %>%
-  select(!contains(vars))
 
 hex_il = st_make_grid(
   il,
