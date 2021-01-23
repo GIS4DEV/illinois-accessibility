@@ -77,3 +77,9 @@ gpkg = here(dt,'il_data.gpkg')
 write_sf(hex_il, gpkg , 'hex_grid')
 write_sf(tracts, gpkg, 'tracts')
 write_sf(hospital_icu, gpkg, 'hospital_icu')
+
+read_csv(
+  "https://idph.illinois.gov/DPHPublicInformation/api/COVIDExport/GetZip?format=csv",
+  skip = 1
+) %>% 
+  write_csv(here(dt,"il_zip_covid.csv"))
