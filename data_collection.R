@@ -36,9 +36,7 @@ if (!file.exists(net_file)) {
   
   ox = import('osmnx')
   
-  network = ox$graph_from_place(state_name, #
-                                buffer_dist = 15000,
-                                network_type = 'drive')
+  network = ox$graph_from_place(state_name, network_type = 'drive')
   ox$save_graphml(network, net_file)
 }
 
@@ -68,7 +66,7 @@ hospital = read_sf(
   'https://opendata.arcgis.com/datasets/6ac5e325468c4cb9b905f1728d6fbf0f_0.geojson'
 ) %>%
   st_transform(crs) %>%
-  filter(lengths(st_intersects(., st_buffer(state, 15000))) > 0  &
+  filter(lengths(st_intersects(., state)) > 0  &
            TYPE == 'GENERAL ACUTE CARE')
 
 icu = read_csv(
