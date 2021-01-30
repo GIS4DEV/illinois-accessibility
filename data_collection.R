@@ -69,9 +69,10 @@ hospital = read_sf(
   filter(lengths(st_intersects(., state)) > 0  &
            TYPE == 'GENERAL ACUTE CARE')
 
-icu = read_csv(
-  'https://healthdata.gov/sites/default/files/reported_hospital_capacity_admissions_facility_level_weekly_average_timeseries_20210117.csv'
+icu = read_sf(
+  'https://opendata.arcgis.com/datasets/6ac5e325468c4cb9b905f1728d6fbf0f_0.geojson'
 ) %>%
+  st_drop_geometry() %>% 
   select(1:13, total_icu_beds_7_day_avg) %>%
   mutate(address = str_to_upper(address)) %>%
   rename_with( ~ paste0(.x, '_icu'))
