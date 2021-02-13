@@ -17,6 +17,7 @@ state_abbrv = 'IL'
 state_name = 'Illinois'
 covid_csv = 'https://idph.illinois.gov/DPHPublicInformation/api/COVIDExport/GetZip?format=csv'
 covid_fp = here(dt,'il_zip_covid.csv') 
+packages = read_lines(here("requirements.txt")) # required packages 
 
 read_csv(
   covid_csv, 
@@ -28,7 +29,7 @@ if(!dir.exists(dt)) dir.create(here(dt))
 
 if (!('geo' %in% conda_list()$name)) {
   conda_create('geo', forge = T)
-  conda_install('geo', packages = 'osmnx',forge = T)
+  conda_install('geo', packages = packages,forge = T)
 }
 
 if (!file.exists(net_file)) {
